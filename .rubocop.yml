@@ -42,6 +42,8 @@ FrozenStringLiteralComment:
   Enabled: false
 ClassAndModuleChildren:
   Enabled: false
+LineLength:
+  Enabled: false
 
 AllCops:
   Exclude:
