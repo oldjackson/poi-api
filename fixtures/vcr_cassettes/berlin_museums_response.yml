@@ -1,0 +1,67 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.mapbox.com/geocoding/v5/mapbox.places/museum.json?access_token=pk.eyJ1Ijoib2xkamFja3NvbiIsImEiOiJjamkyOWF2M3kxbG53M29wb21zNTZzdjZqIn0.JWjiwmC_yMbw0nND-wd0CA&limit=10&proximity=13.437641,52.494857
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.2 (darwin17.4.0 x86_64) ruby/2.4.4p296
+      Host:
+      - api.mapbox.com
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/vnd.geo+json; charset=utf-8
+      Transfer-Encoding:
+      - chunked
+      Connection:
+      - keep-alive
+      Date:
+      - Thu, 07 Jun 2018 21:56:33 GMT
+      X-Powered-By:
+      - Express
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - x-rate-limit-interval,x-rate-limit-limit,x-rate-limit-remaining,x-rate-limit-reset
+      Cache-Control:
+      - max-age=604800
+      X-Rate-Limit-Limit:
+      - '600'
+      X-Rate-Limit-Interval:
+      - '60'
+      X-Rate-Limit-Reset:
+      - '1528408652'
+      Last-Modified:
+      - Tue, 05 Jun 2018 01:26:04 GMT
+      Etag:
+      - '"0b1703667f0af5aeaaa6c911b751f602"'
+      Content-Encoding:
+      - gzip
+      Vary:
+      - Accept-Encoding
+      Age:
+      - '259509'
+      X-Cache:
+      - Hit from cloudfront
+      Via:
+      - 1.1 40558a8efac5d37c733817aee17a93d2.cloudfront.net (CloudFront)
+      X-Amz-Cf-Id:
+      - S93QH1Mpfe3OsZjym54Agn456gl3jQd_v5QggJ8E-Z0qWpk_iIMToA==
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        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
+    http_version: 
+  recorded_at: Sun, 10 Jun 2018 22:01:42 GMT
+recorded_with: VCR 4.0.0
