@@ -1,0 +1,11 @@
+defaults: &defaults
+  map_box_api_token: xxx
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

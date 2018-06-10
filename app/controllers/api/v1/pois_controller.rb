@@ -1,7 +1,6 @@
 require 'rest-client'
 require 'json'
 
-MAP_BOX_API_TOKEN = "pk.eyJ1Ijoib2xkamFja3NvbiIsImEiOiJjamkyOWF2M3kxbG53M29wb21zNTZzdjZqIn0.JWjiwmC_yMbw0nND-wd0CA"
 MAP_BOX_API_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places"
 MAX_ITEMS = 10
 
@@ -25,8 +24,7 @@ module Api
       end
 
       def map_box_url(category)
-        url = "#{MAP_BOX_API_URL}/#{category}.json?access_token=#{MAP_BOX_API_TOKEN}&limit=#{MAX_ITEMS}"
-
+        url = "#{MAP_BOX_API_URL}/#{category}.json?access_token=#{MB_CONFIG['map_box_api_token']}&limit=#{MAX_ITEMS}"
         lng = params[:lng]
         lat = params[:lat]
 
