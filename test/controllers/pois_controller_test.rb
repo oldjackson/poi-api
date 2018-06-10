@@ -1,10 +1,16 @@
 require 'test_helper'
 require 'json'
 
+UNAUTH_RESPONSE = { "message": "Not Authorized - Invalid Token" }
+
 class PoisControllerTest < ActionDispatch::IntegrationTest
   test "should respond to the basic museum search" do
     get pois_museums_url
+
     assert_response :success, "Did not get a successful response for museums without query"
+
+    assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
+
     response_hash = JSON.parse(response.body)
     assert_not_empty response_hash, "Got an empty response"
   end
@@ -14,12 +20,16 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success, "Did not get a successful response for museums around a location"
 
+    assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
+
     response_hash = JSON.parse(response.body)
     assert_not_empty response_hash, "Got an empty response"
   end
 
   test "should get some of the museums around Görlitzer Park, Berlin" do
     get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
+
+    assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
     response_hash = JSON.parse(response.body)
 
@@ -30,6 +40,8 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should get some of the museums around Görlitzer Park, Berlin, with their correct post codes" do
     get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
+
+    assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
     response_hash = JSON.parse(response.body)
 
@@ -46,6 +58,8 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
   test "should get some of the museums around Porta Venezia, Milan" do
     get "#{pois_museums_url}?lat=45.474306&lng=9.204665"
 
+    assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
+
     response_hash = JSON.parse(response.body)
 
     assert_includes(response_hash.values.flatten, "Planetario di Milano", "Did not get the Milan Planetarium")
@@ -55,6 +69,9 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should get some of the museums around Porta Venezia, Milan, with their correct post codes" do
     get "#{pois_museums_url}?lat=45.474306&lng=9.204665"
+
+    assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
+
     response_hash = JSON.parse(response.body)
 
     assert_includes(response_hash.keys, "20121", "Did not get the Milan Planetarium under its correct post code")

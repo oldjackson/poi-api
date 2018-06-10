@@ -18,9 +18,12 @@ module Api
       private
 
       def pois(category)
-        response = RestClient.get map_box_url(category)
-
-        render json: pois_by_postcode_json(response)
+        begin
+          response = RestClient.get map_box_url(category)
+          render json: pois_by_postcode_json(response)
+        rescue RestClient::Exception => e
+          render json: e.response.body
+        end
       end
 
       def map_box_url(category)

@@ -42,6 +42,8 @@ ClassAndModuleChildren:
   Enabled: false
 LineLength:
   Enabled: false
+RedundantBegin:
+  Enabled: false
 
 AllCops:
   Exclude:
