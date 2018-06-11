@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  get 'pois/museums', to: 'api/v1/pois#museums' # for automatically generated Mitest classes
+  # for automatically generated Minitest classes
+  get 'pois/museums', to: 'api/v1/pois#museums'
+
   namespace :api do
     namespace :v1 do
       get 'museums', to: 'pois#museums' # for the proper API use

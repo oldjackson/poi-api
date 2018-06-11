@@ -1,14 +1,16 @@
 require 'test_helper'
 require 'json'
 
+# response body from Mapbox in case of invalid token
 UNAUTH_RESPONSE = { "message": "Not Authorized - Invalid Token" }
 
 class PoisControllerTest < ActionDispatch::IntegrationTest
   test "should respond to the basic museum search" do
     get pois_museums_url
-
+    # generic successful response
     assert_response :success, "Did not get a successful response for museums without query"
 
+    # errors from Mapbox have to be intercepted by the controller, which then renders succesfully: errors have to be checked explicitely
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
     response_hash = JSON.parse(response.body)
@@ -19,9 +21,10 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
     lat = -90.0 + 180.0 * rand
     lng = -180.0 + 360.0 * rand
     get "#{pois_museums_url}?lat=#{lat}&lng=#{lng}"
-
+    # generic successful response
     assert_response :success, "Did not get a successful response for museums around a random location"
 
+    # errors from Mapbox have to be intercepted by the controller, which then renders succesfully: errors have to be checked explicitely
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
     response_hash = JSON.parse(response.body)
@@ -30,8 +33,10 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should get some of the museums around Görlitzer Park, Berlin" do
     get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
+    # Unauthorized user error has to be checked outside the scope of VCR to avoid producing an unmeaningful cassette
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
+    # the Berlin museums data cassette is uniquely associated with the corresponding request URL
     VCR.use_cassette("berlin_museums_response") do
       get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
 
@@ -45,8 +50,10 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should get some of the museums around Görlitzer Park, Berlin, with their correct post codes" do
     get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
+    # Unauthorized user error has to be checked outside the scope of VCR to avoid producing an unmeaningful cassette
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
+    # the Berlin museums data cassette is uniquely associated with the corresponding request URL
     VCR.use_cassette("berlin_museums_response") do
       get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
 
@@ -65,8 +72,10 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should get some of the museums around Porta Venezia, Milan" do
     get "#{pois_museums_url}?lat=45.474306&lng=9.204665"
+    # Unauthorized user error has to be checked outside the scope of VCR to avoid producing an unmeaningful cassette
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
+    # the Milan museums data cassette is uniquely associated with the corresponding request URL
     VCR.use_cassette("milan_museums_response") do
       get "#{pois_museums_url}?lat=45.474306&lng=9.204665"
 
@@ -80,8 +89,10 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should get some of the museums around Porta Venezia, Milan, with their correct post codes" do
     get "#{pois_museums_url}?lat=45.474306&lng=9.204665"
+    # Unauthorized user error has to be checked outside the scope of VCR to avoid producing an unmeaningful cassette
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
+    # the Milan museums data cassette is uniquely associated with the corresponding request URL
     VCR.use_cassette("milan_museums_response") do
       get "#{pois_museums_url}?lat=45.474306&lng=9.204665"
 
@@ -100,13 +111,16 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
 
   test "should return the first 10 museums around Görlitzer Park, Berlin, returned by Mapbox grouped by post codes" do
     get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
+    # Unauthorized user error has to be checked outside the scope of VCR to avoid producing an unmeaningful cassette
     assert_not_equal(JSON.generate(UNAUTH_RESPONSE), response.body, "User not authorized. Check your Mapbox token")
 
+    # the Berlin museums data cassette is uniquely associated with the corresponding request URL
     VCR.use_cassette("berlin_museums_response") do
       get "#{pois_museums_url}?lat=52.494857&lng=13.437641"
 
       response_hash = JSON.parse(response.body)
 
+      # the berlin_museums.yml has been written manually looking at Mapbox' API playground response
       museums = YAML.load_file('fixtures/berlin_museums.yml')
       museums.each do |m|
         assert_not_nil(response_hash[m["code"].to_s], "The #{m['name']} was not returned or not placed under its post code #{m['code']}")

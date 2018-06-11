@@ -10,4 +10,5 @@ task :rubocop do
   sh "rubocop --format simple || true"
 end
 
+# The default actually runs :test as well
 task default: [:rubocop]

@@ -1,4 +1,5 @@
 defaults: &defaults
+  # replace 'xxx' placeholder with your Mapbox key
   map_box_api_token: xxx
 
 development:
