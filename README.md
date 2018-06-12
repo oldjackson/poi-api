@@ -8,7 +8,7 @@ The goal was to have an endpoint like
 
 `/museums?lat=52.494857&lng=13.437641`
 
-return a JSON response containing information about museums existing around the *(latitude, longitude)* GPS point provided in the URL via the query string. Specifically, the returned object has to represent an hash with the museums' postcodes as keys and arrays with the names of the museums having a given postcode as values, as in
+return a JSON response containing information about museums existing around the `(lat, lng)` GPS point provided in the URL via the query string. Specifically, the returned object has to represent the hash of the museums' names ordered using their postcodes as keys, as in
 ```json
 {
   "10999": ["Werkbundarchiv – museum of things"],
@@ -25,14 +25,16 @@ The corresponding Mapbox request, as detailed in the [Mapbox documentation](http
 
 ## Rails app overview
 I used Ruby 2.4.4 and Rails 5.2 .
+
 Having to build essentially a one-routed (or at least one-controller) RESTful API, I kept it as simple as possible, generating it with
-```ruby
+```sh
 rails new poi-api -0 --skip-spring --skip-active-storage -C -M --api
 ```
-that is, without any database (`-0`), no Spring, Active Storage, Active Mailer (`--skip-spring`, `--skip-active-storage`, `-C`, `-M` respectively) and `--api` to configure it to render JSON.
+that is, without any database (`-0`), no Spring, no Active Storage, no Active Mailer (`--skip-spring`, `--skip-active-storage`, `-C`, `-M` respectively) and `--api` to configure it to render JSON.
 
 ### Controller
-The specs require one route, `/museums`, but looking at the Mapbox documentation one realizes that museums are just one of quite many available POI categories, whose search route differ one another for the category name itself appearing in the URL. It is therefore natural to define a `Poi` controller rather than a `Museum` one, providing a `pois#museums` action for museums: the action just passes the category name down to the methods making the proper request. Such methods can then be factored out as private to the controller, while it becomes immediate to define new actions for new categories (`/cinemas` for cinemas via `pois#cinemas` etc).
+The specs require one route, `/museums`, but looking at the Mapbox documentation one realizes that museums are just one of quite many available POI categories, whose search route differ from one another for the category name itself appearing in the URL. It is therefore natural to define a `Poi` controller rather than a `Museum` one, providing a `pois#museums` action for museums: the action just passes the category name down to the methods making the proper request. Such methods can then be factored out as private to the controller, while it becomes immediate to define new actions for new categories (`/cinemas` for cinemas via `pois#cinemas` etc).
+
 To make the actual requests to Mapbox, I chose the simple `RestClient` gem. I factored out also a method which builds the complete URL for Mapbox, noting that this also can be easily improved by adding other query parameters supported by Mapbox.
 
 ### Routes, versioning and tests
@@ -80,4 +82,5 @@ In case Mapbox returns some error (missing API key, out of bounds coordinates, .
 ## Testing
 By running `rake`, the test suite will be executed along with a style check performed by `rubocop`.
 To run only the tests or only the linter, run respectively `rake test` or `rake rubocop`.
+
 If needed, one can delete the `VCR` cassette files in `/fixtures`, as they will be recreated relaunching the tests. A cassette name is uniquely linked with a requested URL: deleting the cassette becomes necessary if a change in some test url is needed.
