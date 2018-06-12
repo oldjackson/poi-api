@@ -30,10 +30,10 @@ Having to build essentially a one-routed (or at least one-controller) RESTful AP
 ```sh
 rails new poi-api -0 --skip-spring --skip-active-storage -C -M --api
 ```
-that is, without any database (`-0`), no Spring, no Active Storage, no Active Mailer (`--skip-spring`, `--skip-active-storage`, `-C`, `-M` respectively) and `--api` to configure it to render JSON.
+that is, without any database (`-0`), no Spring, no Active Storage, no Action Cable, no Action Mailer (`--skip-spring`, `--skip-active-storage`, `-C`, `-M` respectively) and `--api` to configure it to render JSON.
 
 ### Controller
-The specs require one route, `/museums`, but looking at the Mapbox documentation one realizes that museums are just one of quite many available POI categories, whose search route differ from one another for the category name itself appearing in the URL. It is therefore natural to define a `Poi` controller rather than a `Museum` one, providing a `pois#museums` action for museums: the action just passes the category name down to the methods making the proper request. Such methods can then be factored out as private to the controller, while it becomes immediate to define new actions for new categories (`/cinemas` for cinemas via `pois#cinemas` etc).
+The specs require one route, `/museums`, but looking at the Mapbox documentation one realizes that museums are just one of quite many available POI categories, whose search route differ from one another for the category name itself appearing in the URL. It is therefore natural to define a `Poi` controller rather than a `Museum` one, providing a `pois#museums` action for museums: the action just passes the category name down to the methods making the proper request. Such methods can then be factored out as private to the controller, while defining new actions for new categories becomes obvious (`/cinemas` for cinemas via `pois#cinemas` etc).
 
 To make the actual requests to Mapbox, I chose the simple `RestClient` gem. I factored out also a method which builds the complete URL for Mapbox, noting that this also can be easily improved by adding other query parameters supported by Mapbox.
 
@@ -47,11 +47,13 @@ is not the requested one and needs to be redefined as
 get 'museums', to: 'pois#museums'
 ```
 For the tests I chose to use the `Minitest` suite embedded in Rails: the `PoisControllerTest` class is also automatically created by the controller generator.
+
 Following the best practices for APIs, I versioned the app. The resulting routes are prepended by `/api/v1`, which breaks the correspondence with the helpers `pois_museums_url` in the tests. Then I chose not to version the tests but instead to hardcode another route used by the tests, so to change only that one when switching versions (though probably another solution would have been smarter).
 
 ### VCR
-To render the tests independent of the actual response from Mapbox, which is not guaranteed to be stable (their db is constantly evolving; Mapbox could be offline, or interrupt the responses after an amount of requests from the same free-account user), I used the `VCR` gem.
-`VCR` stores the response to a given request in a "cassette" file the first time such request is made; subsequent requests by the test to the same URL will not trigger a real new request, but `VCR` will trick the test responding with the content of the locally stored cassette. This also speeds up the test execution.
+To make the tests independent of the actual response from Mapbox, which is not guaranteed to be stable (their db is constantly evolving; Mapbox could be offline, or interrupt the responses after an amount of requests from the same free-account user), I used the `VCR` gem.
+
+`VCR` stores the response to a given request in a "cassette" file the first time such request is made. Subsequent requests by the test to the same URL will not trigger a real new request: instead, `VCR` will trick the test responding with the content of the locally stored cassette. This also speeds up the test execution.
 
 
 
@@ -64,8 +66,9 @@ After cloning the repo, you should
 
 ## Usage
 After launching the rails server with `rails s` you are good to go.
+
 As is, `poi-api` supports the `/museums` routes with two possible query strings:
- 1. The requested one, as in
+ 1. The one requested by specifications, as in
  ```url
  http://localhost:3000/api/v1/museums?lat=45.474306&lng=9.204665
  ```
