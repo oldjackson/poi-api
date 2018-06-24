@@ -43,7 +43,7 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
       response_hash = JSON.parse(response.body)
 
       assert_includes(response_hash.values.flatten, "Werkbundarchiv – museum of things", "Did not get the Museum of Things")
-      assert_includes(response_hash.values.flatten, "Museum Kindheit und Jugend", "Did not get the Museum of Chilhood and Youth")
+      assert_includes(response_hash.values.flatten, "Museum Kindheit und Jugend", "Did not get the Museum of Childhood and Youth")
       assert_includes(response_hash.values.flatten, "Archenhold Observatory", "Did not get the Archenhold Observatory")
     end
   end
@@ -62,8 +62,8 @@ class PoisControllerTest < ActionDispatch::IntegrationTest
       assert_includes(response_hash.keys, "10999", "Did not get the Museum of Things under its correct post code")
       assert_includes(response_hash["10999"], "Werkbundarchiv – museum of things", "Did not get the Museum of Things under its correct post code")
 
-      assert_includes(response_hash.keys, "10179", "Did not get the Museum of Chilhood and Youth under its correct post code")
-      assert_includes(response_hash["10179"], "Museum Kindheit und Jugend", "Did not get the Museum of Chilhood and Youth under its correct post code")
+      assert_includes(response_hash.keys, "10179", "Did not get the Museum of Childhood and Youth under its correct post code")
+      assert_includes(response_hash["10179"], "Museum Kindheit und Jugend", "Did not get the Museum of Childhood and Youth under its correct post code")
 
       assert_includes(response_hash.keys, "12435", "Did not get the Archenhold Observatory under its correct post code")
       assert_includes(response_hash["12435"], "Archenhold Observatory", "Did not get the Archenhold Observatory under its correct post code")
