@@ -8,24 +8,48 @@ MAX_ITEMS = 10
 module Api
   module V1
     class PoisController < ApplicationController
+      # home-made before_action
+      before_aktion :print_ciao, only: [:museums, :restaurants]
+      before_aktion :print_hi
+
+      # home-made after_action
+      after_aktion :print_bye, only: [:restaurants, :cinemas]
+      after_aktion :print_cv
+
       def museums
         pois("museum")
       end
 
       ### Simply add more analogous actions for other POI categories
-      # def restaurants
-      #   pois("restaurant")
-      # end
+      def restaurants
+        pois("restaurant")
+      end
 
-      # def cinemas
-      #   pois("cinema")
-      # end
+      def cinemas
+        pois("cinema")
+      end
 
       # ...
 
       ###
 
       private
+
+      def print_hi
+        puts 'hi'
+      end
+
+      def print_ciao
+        puts 'ciao'
+      end
+
+      def print_bye
+        puts 'bye'
+      end
+
+      def print_cv
+        puts 'ci vediamo'
+      end
 
       def pois(category)
         begin

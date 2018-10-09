@@ -46,6 +46,8 @@ LineLength:
   Enabled: false
 RedundantBegin:
   Enabled: false
+SymbolArray:
+  Enabled: false
 
 AllCops:
   Exclude:
